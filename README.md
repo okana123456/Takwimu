@@ -12,17 +12,34 @@ It is designed to help organizations move away from spreadsheet-based reporting 
 - M&E reporting
 - Supabase backend structure
 
+## What It Shows
+
+- Role-based platform layout
+- Dashboard overview
+- Data catalog
+- Upload and Google Drive sync concept
+- Users and roles matrix
+- Task queues for verification and follow-up
+
 ## Files
 
 - `index.html`: frontend prototype
 - `supabase-config.js`: Supabase frontend configuration
 - `supabase_schema_takwimu.sql`: database schema for Supabase SQL Editor
 
-## Next Development Steps
+## How To Open
 
-1. Improve the UI into a more polished SaaS product.
-2. Add real Supabase authentication.
-3. Add role-based access rules and row-level security.
-4. Connect dashboards to real Supabase tables.
+Open `index.html` in a browser.
+
+## Suggested Next Steps
+
+1. Enable Supabase row-level security before using live client data.
+2. Connect Supabase authentication.
+3. Add organization and role-based permissions.
+4. Connect the cleaned master datasets.
 5. Add Google Drive sync and import workflows.
+6. Add billing and subscription controls.
 
+## Supabase
+
+The frontend reads Supabase connection settings from `supabase-config.js`.
