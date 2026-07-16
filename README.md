@@ -14,10 +14,11 @@ It is designed to help organizations move away from spreadsheet-based reporting 
 
 ## What It Shows
 
+- Sign-in and account creation entry flow
 - Role-based platform layout
 - Dashboard overview
 - Data catalog
-- Upload and Google Drive sync concept
+- Upload and Google Drive sync workflow
 - Users and roles matrix
 - Task queues for verification and follow-up
 
@@ -39,6 +40,10 @@ Open `index.html` in a browser.
 4. Connect the cleaned master datasets.
 5. Add Google Drive sync and import workflows.
 6. Add billing and subscription controls.
+
+## Drive Connection Flow
+
+In production, a workspace admin will connect a Google Drive folder through a secure backend connector. Takwimu should request access only to selected folders, validate expected Excel templates, log every import, and publish approved records into Supabase-backed dashboards.
 
 ## Supabase
 

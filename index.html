@@ -31,6 +31,91 @@
       color: var(--foreground);
     }
 
+    .auth {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 420px;
+      gap: 0;
+    }
+
+    .auth.hidden,
+    .app.hidden {
+      display: none;
+    }
+
+    .auth-hero {
+      padding: 48px;
+      display: grid;
+      align-content: center;
+      gap: 24px;
+      background:
+        linear-gradient(135deg, rgba(15, 118, 110, 0.12), rgba(37, 99, 235, 0.08)),
+        var(--background);
+    }
+
+    .auth-hero h1 {
+      font-size: 42px;
+      max-width: 620px;
+    }
+
+    .auth-hero p {
+      max-width: 640px;
+      margin: 0;
+      color: var(--muted-foreground);
+      font-size: 17px;
+    }
+
+    .auth-points {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      max-width: 820px;
+    }
+
+    .auth-panel {
+      background: var(--card);
+      border-left: 1px solid var(--border);
+      padding: 32px;
+      display: grid;
+      align-content: center;
+      gap: 18px;
+    }
+
+    .auth-tabs {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .form {
+      display: grid;
+      gap: 12px;
+    }
+
+    label {
+      display: grid;
+      gap: 6px;
+      color: var(--muted-foreground);
+      font-size: 13px;
+    }
+
+    input,
+    select {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--card);
+      color: var(--foreground);
+      padding: 11px 12px;
+      font: inherit;
+    }
+
+    .auth-note {
+      color: var(--muted-foreground);
+      font-size: 13px;
+      margin: 0;
+    }
+
     .app {
       min-height: 100vh;
       display: grid;
@@ -356,7 +441,48 @@
       color: var(--muted-foreground);
     }
 
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .step {
+      min-height: 150px;
+      display: grid;
+      gap: 8px;
+      align-content: start;
+    }
+
+    .step-number {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--primary);
+      color: var(--primary-foreground);
+      font-weight: 700;
+    }
+
+    .connection-card {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 12px;
+      align-items: center;
+    }
+
     @media (max-width: 900px) {
+      .auth {
+        grid-template-columns: 1fr;
+      }
+
+      .auth-panel {
+        border-left: 0;
+        border-top: 1px solid var(--border);
+      }
+
       .app {
         grid-template-columns: 1fr;
       }
@@ -373,6 +499,7 @@
       .stats,
       .grid,
       .split,
+      .steps,
       .topbar {
         grid-template-columns: 1fr;
       }
@@ -390,11 +517,62 @@
       .flow-row {
         grid-template-columns: 84px 1fr 36px;
       }
+
+      .auth-hero,
+      .auth-panel {
+        padding: 22px;
+      }
+
+      .auth-points,
+      .connection-card {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="app">
+  <div class="auth" id="auth-screen">
+    <section class="auth-hero">
+      <div>
+        <h1>Takwimu turns scattered spreadsheets into governed programme intelligence.</h1>
+        <p>Organizations sign in, connect approved data sources, and access dashboards, reports, tasks, and role-based workspaces from one controlled platform.</p>
+      </div>
+      <div class="auth-points">
+        <div class="card tile"><strong>Role-based access</strong><p>Admins, M&E teams, data officers, field teams, and viewers see only what they should.</p></div>
+        <div class="card tile"><strong>Drive sync</strong><p>Connect Google Drive folders, validate files, and import clean records into dashboards.</p></div>
+        <div class="card tile"><strong>M&E analytics</strong><p>Track schools, clubs, training, evidence, targets, and action queues in real time.</p></div>
+      </div>
+    </section>
+
+    <aside class="auth-panel">
+      <div class="brand">
+        <strong>Takwimu</strong>
+        <span class="small">Secure access portal</span>
+      </div>
+      <div class="auth-tabs">
+        <button class="btn primary" type="button" data-auth-tab="signin">Sign in</button>
+        <button class="btn" type="button" data-auth-tab="signup">Create account</button>
+      </div>
+      <form class="form" id="auth-form">
+        <label>
+          Work email
+          <input type="email" value="admin@steamlabs.africa" autocomplete="email">
+        </label>
+        <label id="org-field" class="hidden">
+          Organization
+          <input type="text" value="STEAMLabs Africa">
+        </label>
+        <label>
+          Password
+          <input type="password" value="password" autocomplete="current-password">
+        </label>
+        <button class="btn primary" type="submit" id="auth-submit">Sign in to workspace</button>
+      </form>
+      <p class="auth-note">Prototype mode: this opens the workspace locally. In production, this will use Supabase Auth, organization membership, and row-level security.</p>
+    </aside>
+  </div>
+
+  <div class="app hidden" id="workspace">
     <aside class="sidebar">
       <div class="brand">
         <strong>Takwimu</strong>
@@ -413,7 +591,7 @@
     <main>
       <div class="topbar">
         <div class="search">Search datasets, dashboards, schools, counties, reports</div>
-        <div class="profile"><span>Org Admin</span><span class="avatar">SA</span></div>
+        <div class="profile"><span>Org Admin</span><span class="avatar">SA</span><button class="btn" type="button" id="sign-out">Sign out</button></div>
       </div>
 
       <div class="page-title">
@@ -421,7 +599,7 @@
           <h1 id="page-heading">Home</h1>
           <p id="page-description">Controlled workspace for data, dashboards, roles, uploads, and follow-up tasks.</p>
         </div>
-        <button class="btn primary" type="button">Sync now</button>
+        <button class="btn primary" type="button" data-section-shortcut="upload">Connect Drive</button>
       </div>
 
       <section class="section active" id="home">
@@ -435,14 +613,6 @@
           <div class="card tile"><strong>Dashboard space</strong><p>Programme overview, county performance, M&E targets, and trend analysis.</p><span class="pill">role protected</span></div>
           <div class="card tile"><strong>Data catalog</strong><p>Clean datasets with owners, source files, refresh dates, and data quality flags.</p><span class="pill">spreadsheets replaced</span></div>
           <div class="card tile"><strong>Automations</strong><p>Drive sync, scheduled refresh, missing-data alerts, and monthly report generation.</p><span class="pill">workflow ready</span></div>
-        </div>
-        <div class="card">
-          <div class="card-title"><strong>Supabase connection</strong><span class="small" id="connection-label">configured</span></div>
-          <div class="status-panel">
-            <div class="status-row"><span>Project</span><strong id="supabase-project">qaqysizpefcdoerpdbzy</strong></div>
-            <div class="status-row"><span>API</span><span id="supabase-api">https://qaqysizpefcdoerpdbzy.supabase.co/rest/v1/</span></div>
-            <div class="status-row"><span>Status</span><span id="supabase-status">Frontend config loaded. Tables and security rules still need setup.</span></div>
-          </div>
         </div>
       </section>
 
@@ -495,6 +665,19 @@
       </section>
 
       <section class="section" id="upload">
+        <div class="card connection-card">
+          <div>
+            <div class="card-title"><strong>Google Drive connection</strong><span class="pill">Admin only</span></div>
+            <p class="muted">Connect an approved organization Drive folder. Takwimu will read files through a secure backend connector, validate templates, and import clean records into Supabase.</p>
+          </div>
+          <button class="btn primary" type="button">Connect Google Drive</button>
+        </div>
+        <div class="steps">
+          <div class="card step"><span class="step-number">1</span><strong>Authorize</strong><p class="muted">Admin signs in with Google and grants access to selected Drive folders only.</p></div>
+          <div class="card step"><span class="step-number">2</span><strong>Map files</strong><p class="muted">Choose expected templates such as code clubs, trainers, visits, and reports.</p></div>
+          <div class="card step"><span class="step-number">3</span><strong>Validate</strong><p class="muted">The system checks columns, duplicates, missing values, and reporting period.</p></div>
+          <div class="card step"><span class="step-number">4</span><strong>Publish</strong><p class="muted">Approved records update dashboards, tasks, evidence, and M&E reports.</p></div>
+        </div>
         <div class="split">
           <div class="card">
             <div class="card-title"><strong>Drive sync pipeline</strong><span class="small">controlled import</span></div>
@@ -561,23 +744,49 @@
     const sections = document.querySelectorAll(".section");
     const heading = document.getElementById("page-heading");
     const description = document.getElementById("page-description");
+    const authScreen = document.getElementById("auth-screen");
+    const workspace = document.getElementById("workspace");
+    const authForm = document.getElementById("auth-form");
+    const authSubmit = document.getElementById("auth-submit");
+    const orgField = document.getElementById("org-field");
+    const signOut = document.getElementById("sign-out");
+
+    function showSection(id) {
+      navButtons.forEach((item) => item.classList.toggle("active", item.dataset.section === id));
+      sections.forEach((section) => section.classList.toggle("active", section.id === id));
+      heading.textContent = labels[id][0];
+      description.textContent = labels[id][1];
+    }
 
     navButtons.forEach((button) => {
       button.addEventListener("click", () => {
-        const id = button.dataset.section;
-        navButtons.forEach((item) => item.classList.toggle("active", item === button));
-        sections.forEach((section) => section.classList.toggle("active", section.id === id));
-        heading.textContent = labels[id][0];
-        description.textContent = labels[id][1];
+        showSection(button.dataset.section);
       });
     });
 
-    const config = window.TAKWIMU_SUPABASE;
-    if (config) {
-      document.getElementById("supabase-project").textContent = config.projectId;
-      document.getElementById("supabase-api").textContent = config.restUrl;
-      document.getElementById("connection-label").textContent = "ready for schema";
-    }
+    document.querySelectorAll("[data-auth-tab]").forEach((button) => {
+      button.addEventListener("click", () => {
+        const isSignup = button.dataset.authTab === "signup";
+        document.querySelectorAll("[data-auth-tab]").forEach((item) => item.classList.toggle("primary", item === button));
+        orgField.classList.toggle("hidden", !isSignup);
+        authSubmit.textContent = isSignup ? "Create workspace account" : "Sign in to workspace";
+      });
+    });
+
+    authForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      authScreen.classList.add("hidden");
+      workspace.classList.remove("hidden");
+    });
+
+    signOut.addEventListener("click", () => {
+      workspace.classList.add("hidden");
+      authScreen.classList.remove("hidden");
+    });
+
+    document.querySelectorAll("[data-section-shortcut]").forEach((button) => {
+      button.addEventListener("click", () => showSection(button.dataset.sectionShortcut));
+    });
   </script>
 </body>
 </html>
