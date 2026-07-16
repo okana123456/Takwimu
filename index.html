@@ -270,6 +270,21 @@
       padding: 15px;
     }
 
+    .clickable-card {
+      cursor: pointer;
+      transition: border-color 0.15s ease, transform 0.15s ease, background 0.15s ease;
+    }
+
+    .clickable-card:hover,
+    .clickable-card.active {
+      border-color: var(--primary);
+      background: var(--accent);
+    }
+
+    .clickable-card:hover {
+      transform: translateY(-1px);
+    }
+
     .stat-label {
       color: var(--muted-foreground);
       font-size: 13px;
@@ -468,9 +483,29 @@
 
     .connection-card {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 14px;
+    }
+
+    .drive-connect {
+      display: grid;
+      grid-template-columns: minmax(180px, 1fr) auto;
+      gap: 10px;
+      align-items: end;
+    }
+
+    .detail-list {
+      display: grid;
+      gap: 8px;
+      margin: 0;
+      padding-left: 18px;
+      color: var(--muted-foreground);
+    }
+
+    .insight-panel {
+      min-height: 260px;
+      display: grid;
       gap: 12px;
-      align-items: center;
+      align-content: start;
     }
 
     @media (max-width: 900px) {
@@ -524,7 +559,8 @@
       }
 
       .auth-points,
-      .connection-card {
+      .connection-card,
+      .drive-connect {
         grid-template-columns: 1fr;
       }
     }
@@ -604,15 +640,50 @@
 
       <section class="section active" id="home">
         <div class="stats">
-          <div class="card"><div class="stat-label">Schools</div><div class="stat-value">408</div><div class="small">central records</div></div>
-          <div class="card"><div class="stat-label">Active clubs</div><div class="stat-value">106</div><div class="small">monitored monthly</div></div>
-          <div class="card"><div class="stat-label">Open tasks</div><div class="stat-value">37</div><div class="small">verification and follow-up</div></div>
-          <div class="card"><div class="stat-label">Sync health</div><div class="stat-value">92%</div><div class="small">latest imports</div></div>
+          <button class="card clickable-card active" type="button" data-insight="schools"><div class="stat-label">Schools</div><div class="stat-value">408</div><div class="small">central records</div></button>
+          <button class="card clickable-card" type="button" data-insight="clubs"><div class="stat-label">Active clubs</div><div class="stat-value">106</div><div class="small">monitored monthly</div></button>
+          <button class="card clickable-card" type="button" data-insight="tasks"><div class="stat-label">Open tasks</div><div class="stat-value">37</div><div class="small">verification and follow-up</div></button>
+          <button class="card clickable-card" type="button" data-insight="sync"><div class="stat-label">Sync health</div><div class="stat-value">92%</div><div class="small">latest imports</div></button>
         </div>
-        <div class="grid">
-          <div class="card tile"><strong>Dashboard space</strong><p>Programme overview, county performance, M&E targets, and trend analysis.</p><span class="pill">role protected</span></div>
-          <div class="card tile"><strong>Data catalog</strong><p>Clean datasets with owners, source files, refresh dates, and data quality flags.</p><span class="pill">spreadsheets replaced</span></div>
-          <div class="card tile"><strong>Automations</strong><p>Drive sync, scheduled refresh, missing-data alerts, and monthly report generation.</p><span class="pill">workflow ready</span></div>
+        <div class="split">
+          <div class="card">
+            <div class="card-title"><strong id="insight-title">Schools analysis</strong><span class="pill" id="insight-pill">Drill-down</span></div>
+            <svg id="insight-chart" viewBox="0 0 640 250" role="img" aria-label="Selected dashboard drill-down chart">
+              <line class="gridline" x1="50" y1="200" x2="610" y2="200"></line>
+              <line class="gridline" x1="50" y1="150" x2="610" y2="150"></line>
+              <line class="gridline" x1="50" y1="100" x2="610" y2="100"></line>
+              <line class="axis" x1="50" y1="200" x2="610" y2="200"></line>
+              <line class="axis" x1="50" y1="40" x2="50" y2="200"></line>
+              <rect class="s1" x="90" y="72" width="58" height="128" rx="4"></rect>
+              <rect class="s1" x="205" y="98" width="58" height="102" rx="4"></rect>
+              <rect class="s1" x="320" y="120" width="58" height="80" rx="4"></rect>
+              <rect class="s1" x="435" y="145" width="58" height="55" rx="4"></rect>
+              <rect class="s1" x="550" y="160" width="58" height="40" rx="4"></rect>
+              <text class="label" x="82" y="224">Nairobi</text>
+              <text class="label" x="200" y="224">Kisumu</text>
+              <text class="label" x="313" y="224">Mombasa</text>
+              <text class="label" x="430" y="224">Nakuru</text>
+              <text class="label" x="550" y="224">Turkana</text>
+              <text class="value" x="98" y="64">42</text>
+              <text class="value" x="214" y="90">31</text>
+              <text class="value" x="330" y="112">24</text>
+              <text class="value" x="446" y="137">21</text>
+              <text class="value" x="562" y="152">8</text>
+            </svg>
+          </div>
+          <div class="card insight-panel">
+            <div class="card-title"><strong>What this tells you</strong><span class="small" id="insight-subtitle">County spread</span></div>
+            <p class="muted" id="insight-summary">Schools are concentrated in a few stronger counties. The next view should show whether low-count counties need recruitment, verification, or data cleanup.</p>
+            <ul class="detail-list" id="insight-list">
+              <li>Nairobi has the strongest visible school count.</li>
+              <li>Turkana and similar counties should be checked for missing uploads.</li>
+              <li>Useful next filters: county, school type, programme, reporting period.</li>
+            </ul>
+            <div class="actions">
+              <button class="btn primary" type="button" data-section-shortcut="dashboards">Open full dashboard</button>
+              <button class="btn" type="button" data-section-shortcut="tasks">Create follow-up task</button>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -667,16 +738,20 @@
       <section class="section" id="upload">
         <div class="card connection-card">
           <div>
-            <div class="card-title"><strong>Google Drive connection</strong><span class="pill">Admin only</span></div>
-            <p class="muted">Connect an approved organization Drive folder. Takwimu will read files through a secure backend connector, validate templates, and import clean records into Supabase.</p>
+            <div class="card-title"><strong>Connect Google Drive</strong><span class="pill">Paste folder link</span></div>
+            <p class="muted">Paste the Google Drive folder URL that contains the organization files. Takwimu will save the folder, scan expected spreadsheets, and show what can be imported.</p>
           </div>
-          <button class="btn primary" type="button">Connect Google Drive</button>
-        </div>
-        <div class="steps">
-          <div class="card step"><span class="step-number">1</span><strong>Authorize</strong><p class="muted">Admin signs in with Google and grants access to selected Drive folders only.</p></div>
-          <div class="card step"><span class="step-number">2</span><strong>Map files</strong><p class="muted">Choose expected templates such as code clubs, trainers, visits, and reports.</p></div>
-          <div class="card step"><span class="step-number">3</span><strong>Validate</strong><p class="muted">The system checks columns, duplicates, missing values, and reporting period.</p></div>
-          <div class="card step"><span class="step-number">4</span><strong>Publish</strong><p class="muted">Approved records update dashboards, tasks, evidence, and M&E reports.</p></div>
+          <div class="drive-connect">
+            <label>
+              Drive folder URL
+              <input id="drive-url" type="url" placeholder="https://drive.google.com/drive/folders/...">
+            </label>
+            <button class="btn primary" type="button" id="connect-drive">Connect</button>
+          </div>
+          <div class="status-panel" id="drive-status">
+            <div class="status-row"><span>Status</span><strong>Waiting for folder link</strong></div>
+            <div class="status-row"><span>Next</span><span>Paste a Drive folder URL, then connect.</span></div>
+          </div>
         </div>
         <div class="split">
           <div class="card">
@@ -750,6 +825,86 @@
     const authSubmit = document.getElementById("auth-submit");
     const orgField = document.getElementById("org-field");
     const signOut = document.getElementById("sign-out");
+    const insightTitle = document.getElementById("insight-title");
+    const insightSubtitle = document.getElementById("insight-subtitle");
+    const insightSummary = document.getElementById("insight-summary");
+    const insightList = document.getElementById("insight-list");
+    const insightChart = document.getElementById("insight-chart");
+    const driveUrl = document.getElementById("drive-url");
+    const connectDrive = document.getElementById("connect-drive");
+    const driveStatus = document.getElementById("drive-status");
+
+    const insights = {
+      schools: {
+        title: "Schools analysis",
+        subtitle: "County spread",
+        summary: "Schools are concentrated in a few stronger counties. The next view should show whether low-count counties need recruitment, verification, or data cleanup.",
+        items: ["Nairobi has the strongest visible school count.", "Turkana and similar counties should be checked for missing uploads.", "Useful next filters: county, school type, programme, reporting period."],
+        chart: "bars"
+      },
+      clubs: {
+        title: "Active clubs analysis",
+        subtitle: "Activity status",
+        summary: "Active clubs are the most important operational signal. The deeper view should separate active, inactive, not started, and needs-verification clubs.",
+        items: ["106 clubs are marked active.", "Inactive clubs should trigger follow-up tasks.", "Useful next filters: county, mentor, school, last meeting date."],
+        chart: "status"
+      },
+      tasks: {
+        title: "Task queue analysis",
+        subtitle: "Workload by owner",
+        summary: "The task queue turns dashboard problems into action. Data officers, M&E managers, and county officers should each see their assigned work.",
+        items: ["Verification tasks should be assigned to data officers.", "Missing evidence should go to M&E managers.", "Inactive club follow-up should go to county officers."],
+        chart: "tasks"
+      },
+      sync: {
+        title: "Sync health analysis",
+        subtitle: "Import readiness",
+        summary: "Sync health should show whether Drive files are being read, validated, cleaned, and published into dashboards without errors.",
+        items: ["Failed imports should be visible immediately.", "Template errors should not update dashboards.", "Every import needs a log and owner."],
+        chart: "sync"
+      }
+    };
+
+    function chartMarkup(type) {
+      if (type === "status") {
+        return `
+          <line class="axis" x1="150" y1="210" x2="585" y2="210"></line>
+          <line class="axis" x1="150" y1="45" x2="150" y2="210"></line>
+          <text class="label" x="80" y="76">Active</text><rect class="s1" x="150" y="56" width="255" height="28" rx="4"></rect><text class="value" x="418" y="75">106</text>
+          <text class="label" x="78" y="120">Inactive</text><rect class="s2" x="150" y="100" width="162" height="28" rx="4"></rect><text class="value" x="326" y="119">68</text>
+          <text class="label" x="55" y="164">Not started</text><rect class="s3" x="150" y="144" width="116" height="28" rx="4"></rect><text class="value" x="280" y="163">49</text>
+          <text class="label" x="52" y="208">Verify</text><rect class="s1 soft" x="150" y="188" width="78" height="28" rx="4"></rect><text class="value" x="242" y="207">33</text>
+        `;
+      }
+      if (type === "tasks") {
+        return `
+          <line class="axis" x1="60" y1="200" x2="600" y2="200"></line>
+          <rect class="s3" x="105" y="86" width="70" height="114" rx="4"></rect><text class="value" x="126" y="78">18</text><text class="label" x="98" y="224">Data</text>
+          <rect class="s2" x="270" y="116" width="70" height="84" rx="4"></rect><text class="value" x="292" y="108">12</text><text class="label" x="276" y="224">M&E</text>
+          <rect class="s1" x="435" y="150" width="70" height="50" rx="4"></rect><text class="value" x="460" y="142">7</text><text class="label" x="426" y="224">County</text>
+        `;
+      }
+      if (type === "sync") {
+        return `
+          <line class="axis" x1="70" y1="200" x2="590" y2="200"></line>
+          <line class="axis" x1="70" y1="42" x2="70" y2="200"></line>
+          <polyline class="s1" points="70,66 190,74 310,62 430,82 550,58" fill="none" stroke-width="3"></polyline>
+          <circle class="s1" cx="70" cy="66" r="5"></circle><circle class="s1" cx="190" cy="74" r="5"></circle><circle class="s1" cx="310" cy="62" r="5"></circle><circle class="s1" cx="430" cy="82" r="5"></circle><circle class="s1" cx="550" cy="58" r="5"></circle>
+          <text class="label" x="60" y="224">Mon</text><text class="label" x="180" y="224">Tue</text><text class="label" x="300" y="224">Wed</text><text class="label" x="420" y="224">Thu</text><text class="label" x="540" y="224">Fri</text>
+          <text class="value" x="492" y="48">92% healthy</text>
+        `;
+      }
+      return `
+        <line class="gridline" x1="50" y1="200" x2="610" y2="200"></line>
+        <line class="gridline" x1="50" y1="150" x2="610" y2="150"></line>
+        <line class="gridline" x1="50" y1="100" x2="610" y2="100"></line>
+        <line class="axis" x1="50" y1="200" x2="610" y2="200"></line>
+        <line class="axis" x1="50" y1="40" x2="50" y2="200"></line>
+        <rect class="s1" x="90" y="72" width="58" height="128" rx="4"></rect><rect class="s1" x="205" y="98" width="58" height="102" rx="4"></rect><rect class="s1" x="320" y="120" width="58" height="80" rx="4"></rect><rect class="s1" x="435" y="145" width="58" height="55" rx="4"></rect><rect class="s1" x="550" y="160" width="58" height="40" rx="4"></rect>
+        <text class="label" x="82" y="224">Nairobi</text><text class="label" x="200" y="224">Kisumu</text><text class="label" x="313" y="224">Mombasa</text><text class="label" x="430" y="224">Nakuru</text><text class="label" x="550" y="224">Turkana</text>
+        <text class="value" x="98" y="64">42</text><text class="value" x="214" y="90">31</text><text class="value" x="330" y="112">24</text><text class="value" x="446" y="137">21</text><text class="value" x="562" y="152">8</text>
+      `;
+    }
 
     function showSection(id) {
       navButtons.forEach((item) => item.classList.toggle("active", item.dataset.section === id));
@@ -786,6 +941,33 @@
 
     document.querySelectorAll("[data-section-shortcut]").forEach((button) => {
       button.addEventListener("click", () => showSection(button.dataset.sectionShortcut));
+    });
+
+    document.querySelectorAll("[data-insight]").forEach((button) => {
+      button.addEventListener("click", () => {
+        const selected = insights[button.dataset.insight];
+        document.querySelectorAll("[data-insight]").forEach((card) => card.classList.toggle("active", card === button));
+        insightTitle.textContent = selected.title;
+        insightSubtitle.textContent = selected.subtitle;
+        insightSummary.textContent = selected.summary;
+        insightList.innerHTML = selected.items.map((item) => `<li>${item}</li>`).join("");
+        insightChart.innerHTML = chartMarkup(selected.chart);
+      });
+    });
+
+    connectDrive.addEventListener("click", () => {
+      const value = driveUrl.value.trim();
+      if (!value) {
+        driveStatus.innerHTML = `
+          <div class="status-row"><span>Status</span><strong>Folder link required</strong></div>
+          <div class="status-row"><span>Next</span><span>Paste a Google Drive folder URL first.</span></div>
+        `;
+        return;
+      }
+      driveStatus.innerHTML = `
+        <div class="status-row"><span>Status</span><strong>Folder saved</strong></div>
+        <div class="status-row"><span>Next</span><span>Takwimu will scan spreadsheets, show importable files, then ask an admin to approve publishing.</span></div>
+      `;
     });
   </script>
 </body>
