@@ -1,0 +1,583 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Takwimu Prototype</title>
+  <style>
+    :root {
+      --background: #f7f8f6;
+      --foreground: #17211f;
+      --card: #ffffff;
+      --muted: #e7ebe7;
+      --muted-foreground: #64706b;
+      --border: #d9dfd9;
+      --primary: #0f766e;
+      --primary-foreground: #ffffff;
+      --accent: #edf7f4;
+      --viz-series-1: #0f766e;
+      --viz-series-2: #2563eb;
+      --viz-series-3: #b45309;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+      background: var(--background);
+      color: var(--foreground);
+    }
+
+    .app {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 230px minmax(0, 1fr);
+    }
+
+    .sidebar {
+      border-right: 1px solid var(--border);
+      background: var(--card);
+      padding: 18px 14px;
+      display: grid;
+      align-content: start;
+      gap: 18px;
+    }
+
+    .brand {
+      display: grid;
+      gap: 3px;
+    }
+
+    .brand strong {
+      font-size: 20px;
+      font-weight: 650;
+    }
+
+    .brand span,
+    .muted,
+    .small {
+      color: var(--muted-foreground);
+    }
+
+    .small {
+      font-size: 13px;
+    }
+
+    .nav {
+      display: grid;
+      gap: 6px;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .nav button,
+    .btn {
+      border: 1px solid transparent;
+      border-radius: 8px;
+      background: transparent;
+      color: var(--foreground);
+      padding: 10px 11px;
+      cursor: pointer;
+      text-align: left;
+    }
+
+    .nav button {
+      width: 100%;
+    }
+
+    .nav button.active,
+    .btn.primary {
+      background: var(--primary);
+      color: var(--primary-foreground);
+    }
+
+    .nav button:not(.active):hover,
+    .btn:not(.primary):hover {
+      background: var(--accent);
+    }
+
+    main {
+      padding: 18px;
+      display: grid;
+      gap: 14px;
+      align-content: start;
+    }
+
+    .topbar {
+      display: grid;
+      grid-template-columns: minmax(220px, 1fr) auto;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .search {
+      border: 1px solid var(--border);
+      background: var(--card);
+      border-radius: 8px;
+      padding: 11px 13px;
+      color: var(--muted-foreground);
+    }
+
+    .profile {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--muted-foreground);
+      white-space: nowrap;
+    }
+
+    .avatar {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--primary);
+      color: var(--primary-foreground);
+      font-weight: 650;
+    }
+
+    .page-title {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: end;
+      flex-wrap: wrap;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 26px;
+      line-height: 1.2;
+      letter-spacing: 0;
+    }
+
+    .page-title p {
+      margin: 4px 0 0;
+      color: var(--muted-foreground);
+    }
+
+    .section {
+      display: none;
+      gap: 14px;
+    }
+
+    .section.active {
+      display: grid;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 15px;
+    }
+
+    .stat-label {
+      color: var(--muted-foreground);
+      font-size: 13px;
+      margin-bottom: 7px;
+    }
+
+    .stat-value {
+      font-size: 30px;
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .split {
+      display: grid;
+      grid-template-columns: minmax(0, 1.25fr) minmax(280px, 0.75fr);
+      gap: 12px;
+      align-items: start;
+    }
+
+    .card-title {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .card-title strong,
+    .tile strong {
+      font-weight: 650;
+    }
+
+    .tile {
+      min-height: 125px;
+      display: grid;
+      gap: 8px;
+      align-content: start;
+    }
+
+    .tile p {
+      margin: 0;
+      color: var(--muted-foreground);
+    }
+
+    .pill {
+      display: inline-flex;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 4px 8px;
+      color: var(--muted-foreground);
+      font-size: 12px;
+      width: fit-content;
+      background: var(--background);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+
+    th,
+    td {
+      border-bottom: 1px solid var(--border);
+      padding: 10px 7px;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      color: var(--muted-foreground);
+      font-weight: 650;
+    }
+
+    svg {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .axis,
+    .gridline {
+      stroke: var(--border);
+      stroke-width: 1;
+    }
+
+    .label {
+      fill: var(--muted-foreground);
+      font-size: 13px;
+    }
+
+    .value {
+      fill: var(--foreground);
+      font-size: 13px;
+      font-weight: 650;
+    }
+
+    .s1 {
+      fill: var(--viz-series-1);
+      stroke: var(--viz-series-1);
+    }
+
+    .s2 {
+      fill: var(--viz-series-2);
+      stroke: var(--viz-series-2);
+    }
+
+    .s3 {
+      fill: var(--viz-series-3);
+      stroke: var(--viz-series-3);
+    }
+
+    .soft {
+      opacity: 0.22;
+    }
+
+    .flow {
+      display: grid;
+      gap: 10px;
+    }
+
+    .flow-row {
+      display: grid;
+      grid-template-columns: 110px 1fr 40px;
+      gap: 9px;
+      align-items: center;
+      font-size: 14px;
+    }
+
+    .bar {
+      height: 10px;
+      border-radius: 999px;
+      background: var(--muted);
+      overflow: hidden;
+    }
+
+    .bar span {
+      display: block;
+      height: 100%;
+      background: var(--viz-series-1);
+    }
+
+    .actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 4px;
+    }
+
+    .status-panel {
+      display: grid;
+      gap: 8px;
+      font-size: 14px;
+    }
+
+    .status-row {
+      display: grid;
+      grid-template-columns: 100px 1fr;
+      gap: 8px;
+    }
+
+    .status-row span:first-child {
+      color: var(--muted-foreground);
+    }
+
+    @media (max-width: 900px) {
+      .app {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        border-right: 0;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .nav {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .stats,
+      .grid,
+      .split,
+      .topbar {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 560px) {
+      main {
+        padding: 12px;
+      }
+
+      .nav {
+        grid-template-columns: 1fr;
+      }
+
+      .flow-row {
+        grid-template-columns: 84px 1fr 36px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">
+        <strong>Takwimu</strong>
+        <span class="small">Role-based data platform</span>
+      </div>
+      <nav class="nav" aria-label="Main navigation">
+        <button class="active" data-section="home">Home</button>
+        <button data-section="dashboards">Dashboards</button>
+        <button data-section="catalog">Catalog</button>
+        <button data-section="upload">Upload & Sync</button>
+        <button data-section="roles">Users & Roles</button>
+        <button data-section="tasks">Tasks</button>
+      </nav>
+    </aside>
+
+    <main>
+      <div class="topbar">
+        <div class="search">Search datasets, dashboards, schools, counties, reports</div>
+        <div class="profile"><span>Org Admin</span><span class="avatar">SA</span></div>
+      </div>
+
+      <div class="page-title">
+        <div>
+          <h1 id="page-heading">Home</h1>
+          <p id="page-description">Controlled workspace for data, dashboards, roles, uploads, and follow-up tasks.</p>
+        </div>
+        <button class="btn primary" type="button">Sync now</button>
+      </div>
+
+      <section class="section active" id="home">
+        <div class="stats">
+          <div class="card"><div class="stat-label">Schools</div><div class="stat-value">408</div><div class="small">central records</div></div>
+          <div class="card"><div class="stat-label">Active clubs</div><div class="stat-value">106</div><div class="small">monitored monthly</div></div>
+          <div class="card"><div class="stat-label">Open tasks</div><div class="stat-value">37</div><div class="small">verification and follow-up</div></div>
+          <div class="card"><div class="stat-label">Sync health</div><div class="stat-value">92%</div><div class="small">latest imports</div></div>
+        </div>
+        <div class="grid">
+          <div class="card tile"><strong>Dashboard space</strong><p>Programme overview, county performance, M&E targets, and trend analysis.</p><span class="pill">role protected</span></div>
+          <div class="card tile"><strong>Data catalog</strong><p>Clean datasets with owners, source files, refresh dates, and data quality flags.</p><span class="pill">spreadsheets replaced</span></div>
+          <div class="card tile"><strong>Automations</strong><p>Drive sync, scheduled refresh, missing-data alerts, and monthly report generation.</p><span class="pill">workflow ready</span></div>
+        </div>
+        <div class="card">
+          <div class="card-title"><strong>Supabase connection</strong><span class="small" id="connection-label">configured</span></div>
+          <div class="status-panel">
+            <div class="status-row"><span>Project</span><strong id="supabase-project">qaqysizpefcdoerpdbzy</strong></div>
+            <div class="status-row"><span>API</span><span id="supabase-api">https://qaqysizpefcdoerpdbzy.supabase.co/rest/v1/</span></div>
+            <div class="status-row"><span>Status</span><span id="supabase-status">Frontend config loaded. Tables and security rules still need setup.</span></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="dashboards">
+        <div class="split">
+          <div class="card">
+            <div class="card-title"><strong>Programme reach trend</strong><span class="small">Jan-Jun 2026</span></div>
+            <svg viewBox="0 0 640 250" role="img" aria-label="Line chart showing schools and active clubs increasing">
+              <line class="gridline" x1="50" y1="200" x2="610" y2="200"></line>
+              <line class="gridline" x1="50" y1="150" x2="610" y2="150"></line>
+              <line class="gridline" x1="50" y1="100" x2="610" y2="100"></line>
+              <line class="gridline" x1="50" y1="50" x2="610" y2="50"></line>
+              <line class="axis" x1="50" y1="200" x2="610" y2="200"></line>
+              <line class="axis" x1="50" y1="40" x2="50" y2="200"></line>
+              <polyline class="s1" points="50,176 162,154 274,129 386,102 498,78 610,52" fill="none" stroke-width="3"></polyline>
+              <polyline class="s2" points="50,194 162,188 274,181 386,173 498,164 610,154" fill="none" stroke-width="3"></polyline>
+              <text class="label" x="42" y="224">Jan</text><text class="label" x="154" y="224">Feb</text><text class="label" x="266" y="224">Mar</text><text class="label" x="378" y="224">Apr</text><text class="label" x="490" y="224">May</text><text class="label" x="602" y="224">Jun</text>
+              <text class="value" x="528" y="46">408 schools</text>
+              <text class="value" x="520" y="148">106 active clubs</text>
+            </svg>
+          </div>
+          <div class="card">
+            <div class="card-title"><strong>County comparison</strong><span class="small">ranked view</span></div>
+            <table>
+              <thead><tr><th>County</th><th>Clubs</th><th>Status</th></tr></thead>
+              <tbody>
+                <tr><td>Nairobi</td><td>42</td><td><span class="pill">Strong</span></td></tr>
+                <tr><td>Kisumu</td><td>31</td><td><span class="pill">Growing</span></td></tr>
+                <tr><td>Mombasa</td><td>24</td><td><span class="pill">Follow-up</span></td></tr>
+                <tr><td>Turkana</td><td>8</td><td><span class="pill">Support</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="catalog">
+        <div class="card">
+          <div class="card-title"><strong>Data catalog</strong><span class="small">governed datasets</span></div>
+          <table>
+            <thead><tr><th>Dataset</th><th>Owner</th><th>Access</th><th>Quality</th><th>Refresh</th></tr></thead>
+            <tbody>
+              <tr><td>Schools master</td><td>Data Officer</td><td>Admin, M&E, Programme</td><td>94%</td><td>Daily</td></tr>
+              <tr><td>Code clubs</td><td>Programme Lead</td><td>Admin, M&E, County Officer</td><td>88%</td><td>Daily</td></tr>
+              <tr><td>Training participation</td><td>M&E Manager</td><td>Admin, M&E</td><td>81%</td><td>Weekly</td></tr>
+              <tr><td>Evidence library</td><td>Data Officer</td><td>Admin, Donor viewer</td><td>76%</td><td>Monthly</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="section" id="upload">
+        <div class="split">
+          <div class="card">
+            <div class="card-title"><strong>Drive sync pipeline</strong><span class="small">controlled import</span></div>
+            <div class="flow">
+              <div class="flow-row"><span class="small">Drive files</span><div class="bar"><span style="width:100%"></span></div><strong>29</strong></div>
+              <div class="flow-row"><span class="small">Mapped sheets</span><div class="bar"><span style="width:86%"></span></div><strong>135</strong></div>
+              <div class="flow-row"><span class="small">Clean tables</span><div class="bar"><span style="width:58%"></span></div><strong>10</strong></div>
+              <div class="flow-row"><span class="small">Dashboards</span><div class="bar"><span style="width:70%"></span></div><strong>8</strong></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title"><strong>Upload controls</strong><span class="small">not spreadsheets</span></div>
+            <table>
+              <tbody>
+                <tr><td>Connect approved Drive folder</td><td><span class="pill">Admin</span></td></tr>
+                <tr><td>Validate template before import</td><td><span class="pill">System</span></td></tr>
+                <tr><td>Flag duplicate schools</td><td><span class="pill">Data Officer</span></td></tr>
+                <tr><td>Approve reporting period</td><td><span class="pill">M&E</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="roles">
+        <div class="card">
+          <div class="card-title"><strong>Role-based access matrix</strong><span class="small">multi-tenant SaaS</span></div>
+          <table>
+            <thead><tr><th>Role</th><th>Can view</th><th>Can edit</th><th>Can approve</th></tr></thead>
+            <tbody>
+              <tr><td>Platform Owner</td><td>All organizations</td><td>Plans, billing, tenants</td><td>System settings</td></tr>
+              <tr><td>Organization Admin</td><td>Own organization</td><td>Users, spaces, imports</td><td>Access requests</td></tr>
+              <tr><td>M&E Manager</td><td>All programme data</td><td>Indicators, reports</td><td>Monthly reports</td></tr>
+              <tr><td>Data Officer</td><td>Assigned datasets</td><td>Clean records, resolve issues</td><td>Data quality fixes</td></tr>
+              <tr><td>County Officer</td><td>Assigned county only</td><td>Field updates</td><td>Visit completion</td></tr>
+              <tr><td>Donor Viewer</td><td>Published dashboards</td><td>None</td><td>None</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="section" id="tasks">
+        <div class="grid">
+          <div class="card tile"><strong>Verification queue</strong><p>33 code clubs need confirmation before monthly reporting.</p><span class="pill">Data Officer</span></div>
+          <div class="card tile"><strong>Missing evidence</strong><p>12 training sessions need attendance screenshots or report links.</p><span class="pill">M&E Manager</span></div>
+          <div class="card tile"><strong>County follow-up</strong><p>4 counties have inactive clubs needing field officer follow-up this week.</p><span class="pill">County Officer</span></div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="supabase-config.js"></script>
+  <script>
+    const labels = {
+      home: ["Home", "Controlled workspace for data, dashboards, roles, uploads, and follow-up tasks."],
+      dashboards: ["Dashboards", "Graphs and analysis for programme performance, counties, trainings, and M&E."],
+      catalog: ["Data Catalog", "Governed datasets with owners, access levels, quality scores, and refresh timing."],
+      upload: ["Upload & Sync", "Google Drive and Excel imports with validation before data enters dashboards."],
+      roles: ["Users & Roles", "Permission structure for admins, M&E teams, data officers, field teams, and viewers."],
+      tasks: ["Tasks", "Operational queues for verification, missing evidence, and field follow-up."]
+    };
+
+    const navButtons = document.querySelectorAll(".nav button");
+    const sections = document.querySelectorAll(".section");
+    const heading = document.getElementById("page-heading");
+    const description = document.getElementById("page-description");
+
+    navButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        const id = button.dataset.section;
+        navButtons.forEach((item) => item.classList.toggle("active", item === button));
+        sections.forEach((section) => section.classList.toggle("active", section.id === id));
+        heading.textContent = labels[id][0];
+        description.textContent = labels[id][1];
+      });
+    });
+
+    const config = window.TAKWIMU_SUPABASE;
+    if (config) {
+      document.getElementById("supabase-project").textContent = config.projectId;
+      document.getElementById("supabase-api").textContent = config.restUrl;
+      document.getElementById("connection-label").textContent = "ready for schema";
+    }
+  </script>
+</body>
+</html>
