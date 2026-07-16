@@ -574,6 +574,65 @@
       grid-column: span 6;
     }
 
+    .file-browser {
+      display: grid;
+      grid-template-columns: minmax(280px, 0.9fr) minmax(0, 1.1fr);
+      gap: 12px;
+      align-items: start;
+    }
+
+    .file-search {
+      display: grid;
+      gap: 10px;
+    }
+
+    .file-list {
+      display: grid;
+      gap: 8px;
+      max-height: 620px;
+      overflow: auto;
+      padding-right: 4px;
+    }
+
+    .file-item {
+      width: 100%;
+      border: 1px solid var(--border);
+      background: var(--card);
+      border-radius: 8px;
+      padding: 11px;
+      cursor: pointer;
+      text-align: left;
+      display: grid;
+      gap: 5px;
+    }
+
+    .file-item:hover,
+    .file-item.active {
+      border-color: var(--primary);
+      background: var(--accent);
+    }
+
+    .field-chips {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .preview-box {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--background);
+      padding: 12px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .preview-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+
     @media (max-width: 900px) {
       .auth {
         grid-template-columns: 1fr;
@@ -601,6 +660,7 @@
       .grid,
       .split,
       .dashboard-grid,
+      .file-browser,
       .steps,
       .topbar {
         grid-template-columns: 1fr;
@@ -641,6 +701,10 @@
       }
 
       .source-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .preview-grid {
         grid-template-columns: 1fr;
       }
     }
@@ -697,6 +761,7 @@
       <nav class="nav" aria-label="Main navigation">
         <button class="active" data-section="home">Home</button>
         <button data-section="dashboards">Dashboards</button>
+        <button data-section="files">Files & Sheets</button>
         <button data-section="catalog">Catalog</button>
         <button data-section="upload">Upload & Sync</button>
         <button data-section="roles">Users & Roles</button>
@@ -863,6 +928,44 @@
         </div>
       </section>
 
+      <section class="section" id="files">
+        <div class="stats">
+          <div class="card"><div class="stat-label">Connected files</div><div class="stat-value">29</div><div class="small">from Drive export</div></div>
+          <div class="card"><div class="stat-label">Excel workbooks</div><div class="stat-value">24</div><div class="small">structured sources</div></div>
+          <div class="card"><div class="stat-label">Sheets indexed</div><div class="stat-value">135</div><div class="small">searchable below</div></div>
+          <div class="card"><div class="stat-label">Priority rows</div><div class="stat-value">1.2k</div><div class="small">visible mapped rows</div></div>
+        </div>
+        <div class="file-browser">
+          <div class="card file-search">
+            <div class="card-title"><strong>Files and sheets</strong><span class="pill">Searchable</span></div>
+            <label>
+              Search file, sheet, or field
+              <input id="file-search" type="search" placeholder="Try school, county, email, code club...">
+            </label>
+            <div class="file-list" id="file-list"></div>
+          </div>
+          <div class="card">
+            <div class="card-title"><strong id="file-detail-title">Select a file or sheet</strong><span class="pill" id="file-detail-pill">Preview</span></div>
+            <p class="muted" id="file-detail-summary">Click any file or sheet on the left to see its fields, likely use, and analysis that Takwimu can produce from it.</p>
+            <div class="preview-grid">
+              <div class="preview-box"><span class="stat-label">Rows</span><strong id="file-detail-rows">-</strong></div>
+              <div class="preview-box"><span class="stat-label">Columns</span><strong id="file-detail-columns">-</strong></div>
+              <div class="preview-box"><span class="stat-label">Best use</span><strong id="file-detail-use">-</strong></div>
+            </div>
+            <div class="preview-box">
+              <strong>Detected fields</strong>
+              <div class="field-chips" id="file-detail-fields"></div>
+            </div>
+            <div class="preview-box">
+              <strong>Suggested analysis</strong>
+              <ul class="detail-list" id="file-detail-analysis">
+                <li>Select a sheet to reveal possible analysis.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section class="section" id="catalog">
         <div class="card">
           <div class="card-title"><strong>Data catalog</strong><span class="small">governed datasets</span></div>
@@ -952,6 +1055,7 @@
     const labels = {
       home: ["Home", "Controlled workspace for data, dashboards, roles, uploads, and follow-up tasks."],
       dashboards: ["Dashboards", "Graphs and analysis for programme performance, counties, trainings, and M&E."],
+      files: ["Files & Sheets", "Browse connected Drive files, inspect sheets, and open analysis for each source."],
       catalog: ["Data Catalog", "Governed datasets with owners, access levels, quality scores, and refresh timing."],
       upload: ["Upload & Sync", "Google Drive and Excel imports with validation before data enters dashboards."],
       roles: ["Users & Roles", "Permission structure for admins, M&E teams, data officers, field teams, and viewers."],
@@ -980,6 +1084,16 @@
     const dashboardDetailPill = document.getElementById("dashboard-detail-pill");
     const dashboardDetailSummary = document.getElementById("dashboard-detail-summary");
     const dashboardDetailGrid = document.getElementById("dashboard-detail-grid");
+    const fileSearch = document.getElementById("file-search");
+    const fileList = document.getElementById("file-list");
+    const fileDetailTitle = document.getElementById("file-detail-title");
+    const fileDetailPill = document.getElementById("file-detail-pill");
+    const fileDetailSummary = document.getElementById("file-detail-summary");
+    const fileDetailRows = document.getElementById("file-detail-rows");
+    const fileDetailColumns = document.getElementById("file-detail-columns");
+    const fileDetailUse = document.getElementById("file-detail-use");
+    const fileDetailFields = document.getElementById("file-detail-fields");
+    const fileDetailAnalysis = document.getElementById("file-detail-analysis");
 
     const insights = {
       schools: {
@@ -1070,6 +1184,117 @@
       }
     };
 
+    const fileSheets = [
+      {
+        file: "STEAMLabs Code Clubs(MasterData) - Activation 2026.xlsx",
+        sheet: "Original",
+        rows: 408,
+        columns: 35,
+        use: "Code clubs master",
+        fields: ["Email", "Name", "Phone", "School", "NEMIS/KEMIS", "County", "Sub-County", "Club status", "Learners", "Girls"],
+        analysis: ["Active vs inactive code clubs", "Learners and girls reached by county", "Schools needing verification", "Mentor and data support needs"]
+      },
+      {
+        file: "STEAMLabs Code Clubs(MasterData) - Activation 2026.xlsx",
+        sheet: "Data Analysis & Reconciliation",
+        rows: 400,
+        columns: 44,
+        use: "Data quality",
+        fields: ["School count", "Leader count", "Issue flag", "Portal status", "Priority action", "Unique keys"],
+        analysis: ["Duplicate school/leader detection", "Portal verification gaps", "Priority cleanup actions", "Records ready for publishing"]
+      },
+      {
+        file: "STEAMLabs Code Clubs(MasterData) - Activation 2026.xlsx",
+        sheet: "Active Cc",
+        rows: 106,
+        columns: 8,
+        use: "Active club monitoring",
+        fields: ["Phone", "Email", "School", "Leader", "County", "Sub-County", "Status", "Portal"],
+        analysis: ["Active clubs by county", "Leader contact completeness", "Portal verified vs pending", "County-level follow-up"]
+      },
+      {
+        file: "STEAMLabs Code Clubs(MasterData) - Activation 2026.xlsx",
+        sheet: "New Registrants-March 26",
+        rows: 73,
+        columns: 10,
+        use: "New registrations",
+        fields: ["Registrant", "Event", "Date", "Contact", "School"],
+        analysis: ["New registrants by period", "Conversion into active clubs", "Registration follow-up queue"]
+      },
+      {
+        file: "ATG_3.xlsx",
+        sheet: "today",
+        rows: 68,
+        columns: 7,
+        use: "Outreach activity",
+        fields: ["Company", "Name", "Phone", "Sent", "Sent at", "Subject", "Sender"],
+        analysis: ["Outreach sent by date", "Contact completion", "Follow-up status", "Campaign activity"]
+      },
+      {
+        file: "Verification sheet.xlsx",
+        sheet: "Lead trainers Weekly Reporting",
+        rows: 2,
+        columns: 24,
+        use: "Trainer reporting",
+        fields: ["First name", "Last name", "Email", "Phone", "School", "County", "Reporting link"],
+        analysis: ["Trainer reporting completeness", "Course completion proof", "Payment and verification status"]
+      },
+      {
+        file: "Schools by County(CANVA).xlsx",
+        sheet: "County sheets",
+        rows: 44,
+        columns: 2,
+        use: "School coverage",
+        fields: ["County", "Schools", "Coverage", "Tier"],
+        analysis: ["Schools by county", "Coverage gaps", "Priority counties", "Canva school targeting"]
+      },
+      {
+        file: "Schools, SportsHouses Lead Generation-.xlsx",
+        sheet: "Lead sheets",
+        rows: 11,
+        columns: 5,
+        use: "Lead generation",
+        fields: ["Organization", "Email", "Phone", "Country", "Town/City"],
+        analysis: ["Leads by region", "Contact completeness", "Conversion pipeline", "Assigned follow-up"]
+      },
+      {
+        file: "Master Trainers 2026.xlsx",
+        sheet: "Combined list",
+        rows: 10,
+        columns: 2,
+        use: "Trainer master",
+        fields: ["First name", "Last name", "Course", "Certification", "School", "County"],
+        analysis: ["Certified trainers by county", "Trainer deployment", "Course completion rates"]
+      },
+      {
+        file: "Master Canva Education - Reporting Data Sheet_.xlsx",
+        sheet: "SCS Verified",
+        rows: 9,
+        columns: 5,
+        use: "Canva reporting",
+        fields: ["School", "Contact person", "Phone", "Email", "County"],
+        analysis: ["Verified schools", "Contact gaps", "County coverage", "Canva champion tracking"]
+      },
+      {
+        file: "Certified Master Trainers.xlsx",
+        sheet: "Course uploads",
+        rows: 8,
+        columns: 8,
+        use: "Certification evidence",
+        fields: ["Timestamp", "Email", "Full name", "Phone", "School", "Course", "Certificate"],
+        analysis: ["Certificate uploads", "Course completion by trainer", "Evidence completeness"]
+      },
+      {
+        file: "Registered Clubs.xlsx",
+        sheet: "Regional sheets",
+        rows: 3,
+        columns: 6,
+        use: "Registered clubs",
+        fields: ["Email", "Name", "Phone", "School", "County", "Region"],
+        analysis: ["Registered clubs by region", "Club contact list", "Activation gaps"]
+      }
+    ];
+
     function chartMarkup(type) {
       if (type === "status") {
         return `
@@ -1109,6 +1334,53 @@
         <text class="label" x="82" y="224">Nairobi</text><text class="label" x="200" y="224">Kisumu</text><text class="label" x="313" y="224">Mombasa</text><text class="label" x="430" y="224">Nakuru</text><text class="label" x="550" y="224">Turkana</text>
         <text class="value" x="98" y="64">42</text><text class="value" x="214" y="90">31</text><text class="value" x="330" y="112">24</text><text class="value" x="446" y="137">21</text><text class="value" x="562" y="152">8</text>
       `;
+    }
+
+    function renderFileList(query = "") {
+      const normalized = query.trim().toLowerCase();
+      const filtered = fileSheets.filter((item) => {
+        return [item.file, item.sheet, item.use, ...item.fields].join(" ").toLowerCase().includes(normalized);
+      });
+
+      fileList.innerHTML = filtered.map((item, index) => `
+        <button class="file-item ${index === 0 ? "active" : ""}" type="button" data-file-index="${fileSheets.indexOf(item)}">
+          <strong>${item.file}</strong>
+          <span class="small">${item.sheet} · ${item.rows} rows · ${item.columns} columns</span>
+          <span class="pill">${item.use}</span>
+        </button>
+      `).join("");
+
+      fileList.querySelectorAll("[data-file-index]").forEach((button) => {
+        button.addEventListener("click", () => {
+          fileList.querySelectorAll(".file-item").forEach((item) => item.classList.remove("active"));
+          button.classList.add("active");
+          showFileDetail(fileSheets[Number(button.dataset.fileIndex)]);
+        });
+      });
+
+      if (filtered.length) {
+        showFileDetail(filtered[0]);
+      } else {
+        fileDetailTitle.textContent = "No matching file";
+        fileDetailPill.textContent = "Try another search";
+        fileDetailSummary.textContent = "No connected file or sheet matched your search.";
+        fileDetailRows.textContent = "-";
+        fileDetailColumns.textContent = "-";
+        fileDetailUse.textContent = "-";
+        fileDetailFields.innerHTML = "";
+        fileDetailAnalysis.innerHTML = "<li>Search by file, sheet, field, or use case.</li>";
+      }
+    }
+
+    function showFileDetail(item) {
+      fileDetailTitle.textContent = item.sheet;
+      fileDetailPill.textContent = item.file;
+      fileDetailSummary.textContent = `${item.sheet} can support ${item.use.toLowerCase()} analysis. Takwimu should let users inspect fields, check quality, and open dashboards directly from this source.`;
+      fileDetailRows.textContent = item.rows;
+      fileDetailColumns.textContent = item.columns;
+      fileDetailUse.textContent = item.use;
+      fileDetailFields.innerHTML = item.fields.map((field) => `<span class="pill">${field}</span>`).join("");
+      fileDetailAnalysis.innerHTML = item.analysis.map((point) => `<li>${point}</li>`).join("");
     }
 
     function showSection(id) {
@@ -1172,6 +1444,9 @@
         `).join("");
       });
     });
+
+    fileSearch.addEventListener("input", () => renderFileList(fileSearch.value));
+    renderFileList();
 
     connectDrive.addEventListener("click", () => {
       const value = driveUrl.value.trim();
