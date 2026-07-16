@@ -508,6 +508,72 @@
       align-content: start;
     }
 
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .metric-card {
+      grid-column: span 2;
+      display: grid;
+      gap: 8px;
+      text-align: left;
+    }
+
+    .metric-card.wide {
+      grid-column: span 3;
+    }
+
+    .metric-card strong {
+      font-size: 24px;
+      line-height: 1;
+    }
+
+    .chart-card {
+      grid-column: span 3;
+    }
+
+    .chart-card.large {
+      grid-column: span 4;
+    }
+
+    .chart-card.side {
+      grid-column: span 2;
+    }
+
+    .mini-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .mini-row {
+      display: grid;
+      grid-template-columns: 110px 1fr 42px;
+      gap: 8px;
+      align-items: center;
+      font-size: 13px;
+    }
+
+    .source-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .source-tile {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px;
+      background: var(--background);
+      display: grid;
+      gap: 4px;
+    }
+
+    .drill-table {
+      grid-column: span 6;
+    }
+
     @media (max-width: 900px) {
       .auth {
         grid-template-columns: 1fr;
@@ -534,9 +600,19 @@
       .stats,
       .grid,
       .split,
+      .dashboard-grid,
       .steps,
       .topbar {
         grid-template-columns: 1fr;
+      }
+
+      .metric-card,
+      .metric-card.wide,
+      .chart-card,
+      .chart-card.large,
+      .chart-card.side,
+      .drill-table {
+        grid-column: span 1;
       }
     }
 
@@ -561,6 +637,10 @@
       .auth-points,
       .connection-card,
       .drive-connect {
+        grid-template-columns: 1fr;
+      }
+
+      .source-grid {
         grid-template-columns: 1fr;
       }
     }
@@ -688,34 +768,97 @@
       </section>
 
       <section class="section" id="dashboards">
-        <div class="split">
-          <div class="card">
-            <div class="card-title"><strong>Programme reach trend</strong><span class="small">Jan-Jun 2026</span></div>
-            <svg viewBox="0 0 640 250" role="img" aria-label="Line chart showing schools and active clubs increasing">
-              <line class="gridline" x1="50" y1="200" x2="610" y2="200"></line>
-              <line class="gridline" x1="50" y1="150" x2="610" y2="150"></line>
-              <line class="gridline" x1="50" y1="100" x2="610" y2="100"></line>
-              <line class="gridline" x1="50" y1="50" x2="610" y2="50"></line>
-              <line class="axis" x1="50" y1="200" x2="610" y2="200"></line>
-              <line class="axis" x1="50" y1="40" x2="50" y2="200"></line>
-              <polyline class="s1" points="50,176 162,154 274,129 386,102 498,78 610,52" fill="none" stroke-width="3"></polyline>
-              <polyline class="s2" points="50,194 162,188 274,181 386,173 498,164 610,154" fill="none" stroke-width="3"></polyline>
-              <text class="label" x="42" y="224">Jan</text><text class="label" x="154" y="224">Feb</text><text class="label" x="266" y="224">Mar</text><text class="label" x="378" y="224">Apr</text><text class="label" x="490" y="224">May</text><text class="label" x="602" y="224">Jun</text>
-              <text class="value" x="528" y="46">408 schools</text>
-              <text class="value" x="520" y="148">106 active clubs</text>
+        <div class="dashboard-grid">
+          <button class="card metric-card clickable-card active" type="button" data-dashboard-detail="coverage">
+            <span class="stat-label">Files scanned</span>
+            <strong>29</strong>
+            <span class="small">24 workbooks, 4 docs, 1 deck</span>
+          </button>
+          <button class="card metric-card clickable-card" type="button" data-dashboard-detail="sheets">
+            <span class="stat-label">Sheets mapped</span>
+            <strong>135</strong>
+            <span class="small">across the Drive export</span>
+          </button>
+          <button class="card metric-card clickable-card" type="button" data-dashboard-detail="fields">
+            <span class="stat-label">Matching fields</span>
+            <strong>89</strong>
+            <span class="small">school fields detected</span>
+          </button>
+          <button class="card metric-card wide clickable-card" type="button" data-dashboard-detail="clubs">
+            <span class="stat-label">Code club records</span>
+            <strong>408</strong>
+            <span class="small">largest master sheet, 35 columns</span>
+          </button>
+          <button class="card metric-card wide clickable-card" type="button" data-dashboard-detail="quality">
+            <span class="stat-label">Data quality alerts</span>
+            <strong>37</strong>
+            <span class="small">verification, duplicates, missing evidence</span>
+          </button>
+
+          <div class="card chart-card large">
+            <div class="card-title"><strong>Programme reach and club activity</strong><span class="small">sample trend from imported files</span></div>
+            <svg viewBox="0 0 720 280" role="img" aria-label="Programme trend chart">
+              <line class="gridline" x1="58" y1="228" x2="680" y2="228"></line>
+              <line class="gridline" x1="58" y1="178" x2="680" y2="178"></line>
+              <line class="gridline" x1="58" y1="128" x2="680" y2="128"></line>
+              <line class="gridline" x1="58" y1="78" x2="680" y2="78"></line>
+              <line class="axis" x1="58" y1="228" x2="680" y2="228"></line>
+              <line class="axis" x1="58" y1="48" x2="58" y2="228"></line>
+              <polyline class="s1" points="58,198 182,174 306,142 430,112 554,86 680,58" fill="none" stroke-width="4"></polyline>
+              <polyline class="s2" points="58,218 182,211 306,202 430,194 554,183 680,173" fill="none" stroke-width="4"></polyline>
+              <text class="label" x="48" y="254">Jan</text><text class="label" x="172" y="254">Feb</text><text class="label" x="296" y="254">Mar</text><text class="label" x="420" y="254">Apr</text><text class="label" x="544" y="254">May</text><text class="label" x="670" y="254">Jun</text>
+              <text class="value" x="590" y="50">408 schools</text>
+              <text class="value" x="586" y="166">106 active clubs</text>
             </svg>
           </div>
-          <div class="card">
-            <div class="card-title"><strong>County comparison</strong><span class="small">ranked view</span></div>
-            <table>
-              <thead><tr><th>County</th><th>Clubs</th><th>Status</th></tr></thead>
-              <tbody>
-                <tr><td>Nairobi</td><td>42</td><td><span class="pill">Strong</span></td></tr>
-                <tr><td>Kisumu</td><td>31</td><td><span class="pill">Growing</span></td></tr>
-                <tr><td>Mombasa</td><td>24</td><td><span class="pill">Follow-up</span></td></tr>
-                <tr><td>Turkana</td><td>8</td><td><span class="pill">Support</span></td></tr>
-              </tbody>
-            </table>
+
+          <div class="card chart-card side">
+            <div class="card-title"><strong>Field coverage</strong><span class="small">detected columns</span></div>
+            <div class="mini-list">
+              <div class="mini-row"><span>School</span><div class="bar"><span style="width:100%"></span></div><strong>89</strong></div>
+              <div class="mini-row"><span>County</span><div class="bar"><span style="width:75%"></span></div><strong>67</strong></div>
+              <div class="mini-row"><span>Email</span><div class="bar"><span style="width:64%"></span></div><strong>57</strong></div>
+              <div class="mini-row"><span>Phone</span><div class="bar"><span style="width:61%"></span></div><strong>54</strong></div>
+              <div class="mini-row"><span>Club</span><div class="bar"><span style="width:31%"></span></div><strong>28</strong></div>
+            </div>
+          </div>
+
+          <div class="card chart-card">
+            <div class="card-title"><strong>Source mix</strong><span class="small">Drive contents</span></div>
+            <svg viewBox="0 0 420 250" role="img" aria-label="Source mix chart">
+              <circle class="s1 soft" cx="140" cy="122" r="82"></circle>
+              <circle class="s1" cx="140" cy="122" r="62"></circle>
+              <circle class="s2" cx="282" cy="92" r="34"></circle>
+              <circle class="s3" cx="282" cy="170" r="20"></circle>
+              <text class="value" x="112" y="118">24</text><text class="label" x="100" y="140">Excel</text>
+              <text class="value" x="275" y="88">4</text><text class="label" x="252" y="110">Docs</text>
+              <text class="value" x="278" y="174">1</text><text class="label" x="250" y="196">Deck</text>
+            </svg>
+          </div>
+
+          <div class="card chart-card">
+            <div class="card-title"><strong>Training funnel</strong><span class="small">registration to certification</span></div>
+            <svg viewBox="0 0 420 250" role="img" aria-label="Training funnel chart">
+              <polygon class="s1 soft" points="40,30 380,30 340,72 80,72"></polygon>
+              <polygon class="s2 soft" points="80,88 340,88 300,130 120,130"></polygon>
+              <polygon class="s3 soft" points="120,146 300,146 262,188 158,188"></polygon>
+              <polygon class="s1" points="158,204 262,204 236,232 184,232" opacity="0.72"></polygon>
+              <text class="value" x="190" y="57">520</text><text class="label" x="178" y="78">Registered</text>
+              <text class="value" x="190" y="116">430</text><text class="label" x="186" y="137">Attended</text>
+              <text class="value" x="190" y="174">312</text><text class="label" x="183" y="195">Completed</text>
+              <text class="value" x="193" y="224">185</text>
+            </svg>
+          </div>
+
+          <div class="card drill-table">
+            <div class="card-title"><strong id="dashboard-detail-title">Drive data coverage</strong><span class="pill" id="dashboard-detail-pill">Clickable summary</span></div>
+            <p class="muted" id="dashboard-detail-summary">Takwimu should not show one dry chart. It should first explain what was found in the connected Drive folder, then guide the user into detailed analysis.</p>
+            <div class="source-grid" id="dashboard-detail-grid">
+              <div class="source-tile"><strong>STEAMLabs Code Clubs</strong><span class="small">408 rows, 35 columns</span></div>
+              <div class="source-tile"><strong>Data reconciliation</strong><span class="small">400 rows, 44 columns</span></div>
+              <div class="source-tile"><strong>Active clubs</strong><span class="small">106 rows, 8 columns</span></div>
+              <div class="source-tile"><strong>New registrants</strong><span class="small">73 rows, 10 columns</span></div>
+            </div>
           </div>
         </div>
       </section>
@@ -833,6 +976,10 @@
     const driveUrl = document.getElementById("drive-url");
     const connectDrive = document.getElementById("connect-drive");
     const driveStatus = document.getElementById("drive-status");
+    const dashboardDetailTitle = document.getElementById("dashboard-detail-title");
+    const dashboardDetailPill = document.getElementById("dashboard-detail-pill");
+    const dashboardDetailSummary = document.getElementById("dashboard-detail-summary");
+    const dashboardDetailGrid = document.getElementById("dashboard-detail-grid");
 
     const insights = {
       schools: {
@@ -862,6 +1009,64 @@
         summary: "Sync health should show whether Drive files are being read, validated, cleaned, and published into dashboards without errors.",
         items: ["Failed imports should be visible immediately.", "Template errors should not update dashboards.", "Every import needs a log and owner."],
         chart: "sync"
+      }
+    };
+
+    const dashboardDetails = {
+      coverage: {
+        title: "Drive data coverage",
+        pill: "29 files",
+        summary: "The connected Drive folder contains a mix of workbooks, reports, and a presentation. The first dashboard should show what was found before asking users to trust any analysis.",
+        tiles: [
+          ["Excel workbooks", "24 files ready for structured import"],
+          ["Word reports", "4 documents useful for evidence and narrative"],
+          ["PowerPoint deck", "1 strategy or reporting deck"],
+          ["Priority source", "Code Clubs master workbook"]
+        ]
+      },
+      sheets: {
+        title: "Workbook sheet map",
+        pill: "135 sheets",
+        summary: "The data is spread across many sheets, so Takwimu should group them into clean datasets rather than making users open files one by one.",
+        tiles: [
+          ["Schools by County", "44 county sheets"],
+          ["SportsHouses leads", "11 sheets"],
+          ["Master Trainers", "10 sheets"],
+          ["Canva reporting", "9 sheets"]
+        ]
+      },
+      fields: {
+        title: "Matching fields detected",
+        pill: "data linking",
+        summary: "Shared fields like school, county, email, and phone are what allow Takwimu to connect scattered spreadsheets into one system.",
+        tiles: [
+          ["School", "Found in 89 sheets"],
+          ["County", "Found in 67 sheets"],
+          ["Email", "Found in 57 sheets"],
+          ["Phone", "Found in 54 sheets"]
+        ]
+      },
+      clubs: {
+        title: "Code club master analysis",
+        pill: "408 records",
+        summary: "The Code Clubs master file is the strongest starting dataset. It should power the first real dashboards, tasks, and verification workflows.",
+        tiles: [
+          ["Original sheet", "408 rows, 35 columns"],
+          ["Reconciliation", "400 rows, 44 columns"],
+          ["Active clubs", "106 rows"],
+          ["New registrants", "73 rows"]
+        ]
+      },
+      quality: {
+        title: "Data quality and action queue",
+        pill: "alerts",
+        summary: "The dashboard should not only show charts; it should tell users what needs fixing, who owns it, and what should be approved before reporting.",
+        tiles: [
+          ["Verification", "Clubs needing confirmation"],
+          ["Duplicates", "Schools and leaders to reconcile"],
+          ["Missing evidence", "Reports needing links or screenshots"],
+          ["Approvals", "M&E period sign-off"]
+        ]
       }
     };
 
@@ -952,6 +1157,19 @@
         insightSummary.textContent = selected.summary;
         insightList.innerHTML = selected.items.map((item) => `<li>${item}</li>`).join("");
         insightChart.innerHTML = chartMarkup(selected.chart);
+      });
+    });
+
+    document.querySelectorAll("[data-dashboard-detail]").forEach((button) => {
+      button.addEventListener("click", () => {
+        const selected = dashboardDetails[button.dataset.dashboardDetail];
+        document.querySelectorAll("[data-dashboard-detail]").forEach((card) => card.classList.toggle("active", card === button));
+        dashboardDetailTitle.textContent = selected.title;
+        dashboardDetailPill.textContent = selected.pill;
+        dashboardDetailSummary.textContent = selected.summary;
+        dashboardDetailGrid.innerHTML = selected.tiles.map(([title, detail]) => `
+          <div class="source-tile"><strong>${title}</strong><span class="small">${detail}</span></div>
+        `).join("");
       });
     });
 
