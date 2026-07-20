@@ -574,6 +574,58 @@
       grid-column: span 6;
     }
 
+    .programme-layout {
+      display: grid;
+      grid-template-columns: 250px minmax(0, 1fr);
+      gap: 12px;
+      align-items: start;
+    }
+
+    .programme-list {
+      display: grid;
+      gap: 8px;
+    }
+
+    .programme-button {
+      width: 100%;
+      border: 1px solid var(--border);
+      background: var(--card);
+      border-radius: 8px;
+      padding: 11px;
+      display: grid;
+      gap: 4px;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .programme-button:hover,
+    .programme-button.active {
+      border-color: var(--primary);
+      background: var(--accent);
+    }
+
+    .programme-tabs {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .resource-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .resource-card {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--background);
+      padding: 12px;
+      display: grid;
+      gap: 6px;
+      min-height: 116px;
+    }
+
     .file-browser {
       display: grid;
       grid-template-columns: minmax(280px, 0.9fr) minmax(0, 1.1fr);
@@ -680,6 +732,7 @@
       .split,
       .dashboard-grid,
       .file-browser,
+      .programme-layout,
       .steps,
       .topbar {
         grid-template-columns: 1fr;
@@ -728,6 +781,10 @@
       }
 
       .result-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .resource-grid {
         grid-template-columns: 1fr;
       }
     }
@@ -783,6 +840,7 @@
       </div>
       <nav class="nav" aria-label="Main navigation">
         <button class="active" data-section="home">Home</button>
+        <button data-section="programmes">Programmes</button>
         <button data-section="dashboards">Dashboards</button>
         <button data-section="files">Files & Sheets</button>
         <button data-section="catalog">Catalog</button>
@@ -851,6 +909,44 @@
               <button class="btn primary" type="button" data-section-shortcut="dashboards">Open full dashboard</button>
               <button class="btn" type="button" data-section-shortcut="tasks">Create follow-up task</button>
             </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="programmes">
+        <div class="programme-layout">
+          <div class="card">
+            <div class="card-title"><strong>Programmes</strong><span class="pill">Separate workspaces</span></div>
+            <div class="programme-list">
+              <button class="programme-button active" type="button" data-programme="codeClubs"><strong>Code Clubs</strong><span class="small">Clubs, schools, learners, mentors</span></button>
+              <button class="programme-button" type="button" data-programme="aiSkilling"><strong>AI Skilling</strong><span class="small">Training, completion, reporting</span></button>
+              <button class="programme-button" type="button" data-programme="canva"><strong>Canva Education</strong><span class="small">Verified schools and champions</span></button>
+              <button class="programme-button" type="button" data-programme="trainers"><strong>Master Trainers</strong><span class="small">Certification and deployment</span></button>
+              <button class="programme-button" type="button" data-programme="mentorship"><strong>School Visits</strong><span class="small">Mentorship and field follow-up</span></button>
+              <button class="programme-button" type="button" data-programme="leads"><strong>Leads & Outreach</strong><span class="small">Prospects, calls, conversion</span></button>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title"><strong id="programme-title">Code Clubs</strong><span class="pill" id="programme-pill">Programme workspace</span></div>
+            <p class="muted" id="programme-summary">Code Clubs data is kept separate from other programmes, with its own dashboards, files, resources, evidence, and tasks.</p>
+            <div class="programme-tabs">
+              <button class="btn primary" type="button">Overview</button>
+              <button class="btn" type="button">Data</button>
+              <button class="btn" type="button">Files</button>
+              <button class="btn" type="button">Google Forms</button>
+              <button class="btn" type="button">Recordings</button>
+              <button class="btn" type="button">Posters</button>
+              <button class="btn" type="button">Reports</button>
+              <button class="btn" type="button">Tasks</button>
+            </div>
+            <div class="stats" style="margin-top: 12px;">
+              <div class="card"><div class="stat-label" id="programme-metric-one-label">Schools/clubs</div><div class="stat-value" id="programme-metric-one">408</div><div class="small">programme records</div></div>
+              <div class="card"><div class="stat-label" id="programme-metric-two-label">Active clubs</div><div class="stat-value" id="programme-metric-two">106</div><div class="small">currently monitored</div></div>
+              <div class="card"><div class="stat-label" id="programme-metric-three-label">Sheets</div><div class="stat-value" id="programme-metric-three">8</div><div class="small">linked sheets</div></div>
+              <div class="card"><div class="stat-label" id="programme-metric-four-label">Actions</div><div class="stat-value" id="programme-metric-four">33</div><div class="small">open follow-ups</div></div>
+            </div>
+            <div class="resource-grid" id="programme-resources" style="margin-top: 12px;"></div>
           </div>
         </div>
       </section>
@@ -1081,6 +1177,7 @@
   <script>
     const labels = {
       home: ["Home", "Controlled workspace for data, dashboards, roles, uploads, and follow-up tasks."],
+      programmes: ["Programmes", "Each programme has its own dashboard, data, Google Forms, recordings, posters, evidence, reports, and tasks."],
       dashboards: ["Dashboards", "Graphs and analysis for programme performance, counties, trainings, and M&E."],
       files: ["Files & Sheets", "Browse connected Drive files, inspect sheets, and open analysis for each source."],
       catalog: ["Data Catalog", "Governed datasets with owners, access levels, quality scores, and refresh timing."],
@@ -1111,6 +1208,18 @@
     const dashboardDetailPill = document.getElementById("dashboard-detail-pill");
     const dashboardDetailSummary = document.getElementById("dashboard-detail-summary");
     const dashboardDetailGrid = document.getElementById("dashboard-detail-grid");
+    const programmeTitle = document.getElementById("programme-title");
+    const programmePill = document.getElementById("programme-pill");
+    const programmeSummary = document.getElementById("programme-summary");
+    const programmeResources = document.getElementById("programme-resources");
+    const programmeMetricOneLabel = document.getElementById("programme-metric-one-label");
+    const programmeMetricOne = document.getElementById("programme-metric-one");
+    const programmeMetricTwoLabel = document.getElementById("programme-metric-two-label");
+    const programmeMetricTwo = document.getElementById("programme-metric-two");
+    const programmeMetricThreeLabel = document.getElementById("programme-metric-three-label");
+    const programmeMetricThree = document.getElementById("programme-metric-three");
+    const programmeMetricFourLabel = document.getElementById("programme-metric-four-label");
+    const programmeMetricFour = document.getElementById("programme-metric-four");
     const fileSearch = document.getElementById("file-search");
     const fileList = document.getElementById("file-list");
     const fileDetailTitle = document.getElementById("file-detail-title");
@@ -1209,6 +1318,51 @@
           ["Missing evidence", "Reports needing links or screenshots"],
           ["Approvals", "M&E period sign-off"]
         ]
+      }
+    };
+
+    const programmes = {
+      codeClubs: {
+        title: "Code Clubs",
+        pill: "Schools and clubs",
+        summary: "Code Clubs has its own workspace for registered clubs, active clubs, learners, girls reached, mentorship, weekly reporting, and evidence.",
+        metrics: [["Schools/clubs", "408"], ["Active clubs", "106"], ["Sheets", "8"], ["Actions", "33"]],
+        resources: [["Google Forms", "Activation, weekly reports, mentor attendance"], ["Recordings", "Training and mentorship sessions"], ["Posters", "Recruitment and club campaign assets"], ["Evidence", "Photos, screenshots, reports, certificates"]]
+      },
+      aiSkilling: {
+        title: "AI Skilling",
+        pill: "Training delivery",
+        summary: "AI Skilling keeps training registration, attendance, course completion, proof of execution, and milestone reporting separate from other programme data.",
+        metrics: [["Registrations", "520"], ["Attended", "430"], ["Completed", "312"], ["Certified", "185"]],
+        resources: [["Google Forms", "Registration and reporting forms"], ["Recordings", "Training sessions and webinars"], ["Reports", "Milestone and proof-of-execution reports"], ["Certificates", "Uploaded course evidence"]]
+      },
+      canva: {
+        title: "Canva Education",
+        pill: "Schools and champions",
+        summary: "Canva Education has its own verified schools, champion applications, follow-up forms, training assets, posters, and reports.",
+        metrics: [["Verified sheets", "9"], ["School fields", "89"], ["Contacts", "57"], ["Counties", "44"]],
+        resources: [["Google Forms", "Champion applications and follow-up"], ["Posters", "Canva school campaign materials"], ["Reports", "Verified schools and county coverage"], ["Evidence", "Screenshots and training proof"]]
+      },
+      trainers: {
+        title: "Master Trainers",
+        pill: "Certification",
+        summary: "Master Trainers stores trainer records, certificates, course uploads, deployment planning, and reporting evidence.",
+        metrics: [["Trainer sheets", "10"], ["Certificate sheets", "8"], ["Courses", "4"], ["Evidence", "Tracked"]],
+        resources: [["Certificates", "Uploaded trainer proof"], ["Google Forms", "Course upload forms"], ["Reports", "Certification summaries"], ["Deployment", "County trainer assignment lists"]]
+      },
+      mentorship: {
+        title: "School Visits",
+        pill: "Mentorship",
+        summary: "School Visits keeps mentorship trackers, assigned team members, school visit evidence, attendance, and follow-up tasks together.",
+        metrics: [["Visit trackers", "6"], ["Assigned teams", "1"], ["Open follow-ups", "4"], ["Evidence", "Required"]],
+        resources: [["Recordings", "Mentorship session proof"], ["Photos", "School visit evidence"], ["Attendance", "Mentor and learner lists"], ["Tasks", "Pending follow-ups by officer"]]
+      },
+      leads: {
+        title: "Leads & Outreach",
+        pill: "Pipeline",
+        summary: "Leads & Outreach separates prospects, contact lists, campaigns, call activity, conversion, and assigned follow-up from programme delivery data.",
+        metrics: [["Lead sheets", "11"], ["Outreach rows", "68"], ["Core fields", "5"], ["Pipeline", "Active"]],
+        resources: [["Lead forms", "Inquiry and prospect capture"], ["Campaigns", "Posters and outreach assets"], ["Calls", "Contact and follow-up history"], ["Reports", "Conversion and source performance"]]
       }
     };
 
@@ -1427,6 +1581,24 @@
       fileDetailAnalysis.innerHTML = item.analysis.map((point) => `<li>${point}</li>`).join("");
     }
 
+    function renderProgramme(key) {
+      const selected = programmes[key];
+      programmeTitle.textContent = selected.title;
+      programmePill.textContent = selected.pill;
+      programmeSummary.textContent = selected.summary;
+      programmeMetricOneLabel.textContent = selected.metrics[0][0];
+      programmeMetricOne.textContent = selected.metrics[0][1];
+      programmeMetricTwoLabel.textContent = selected.metrics[1][0];
+      programmeMetricTwo.textContent = selected.metrics[1][1];
+      programmeMetricThreeLabel.textContent = selected.metrics[2][0];
+      programmeMetricThree.textContent = selected.metrics[2][1];
+      programmeMetricFourLabel.textContent = selected.metrics[3][0];
+      programmeMetricFour.textContent = selected.metrics[3][1];
+      programmeResources.innerHTML = selected.resources.map(([title, detail]) => `
+        <div class="resource-card"><strong>${title}</strong><span class="small">${detail}</span></div>
+      `).join("");
+    }
+
     function showSection(id) {
       navButtons.forEach((item) => item.classList.toggle("active", item.dataset.section === id));
       sections.forEach((section) => section.classList.toggle("active", section.id === id));
@@ -1489,8 +1661,16 @@
       });
     });
 
+    document.querySelectorAll("[data-programme]").forEach((button) => {
+      button.addEventListener("click", () => {
+        document.querySelectorAll("[data-programme]").forEach((item) => item.classList.toggle("active", item === button));
+        renderProgramme(button.dataset.programme);
+      });
+    });
+
     fileSearch.addEventListener("input", () => renderFileList(fileSearch.value));
     renderFileList();
+    renderProgramme("codeClubs");
 
     connectDrive.addEventListener("click", () => {
       const value = driveUrl.value.trim();
