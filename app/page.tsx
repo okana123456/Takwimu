@@ -122,7 +122,10 @@ export default function Page() {
       return;
     }
 
-    setDriveStatus("Folder link saved. Drive indexing backend will scan files for this programme.");
+    setDriveStatus("Opening Google permission screen...");
+    window.location.href = `/api/drive/connect?programmeId=${encodeURIComponent(
+      activeProgramme.id
+    )}&driveUrl=${encodeURIComponent(driveUrl.trim())}`;
   }
 
   if (!signedIn) {
