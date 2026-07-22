@@ -1,0 +1,360 @@
+:root {
+  --bg: #f6f8f7;
+  --card: #ffffff;
+  --ink: #15211f;
+  --muted: #63716d;
+  --line: #dbe3df;
+  --brand: #0f766e;
+  --brand-dark: #0b514c;
+  --blue: #2563eb;
+  --amber: #b45309;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: "Segoe UI", Arial, sans-serif;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+button {
+  border: 0;
+  border-radius: 8px;
+  background: var(--brand);
+  color: #fff;
+  cursor: pointer;
+  padding: 10px 12px;
+}
+
+input {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 11px 12px;
+  color: var(--ink);
+  background: #fff;
+}
+
+label {
+  display: grid;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.auth-page {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 420px;
+}
+
+.auth-copy {
+  padding: 52px;
+  display: grid;
+  gap: 18px;
+  align-content: center;
+}
+
+.auth-copy h1 {
+  max-width: 760px;
+  margin: 0;
+  font-size: 44px;
+  line-height: 1.08;
+}
+
+.auth-copy p {
+  max-width: 680px;
+  color: var(--muted);
+  font-size: 17px;
+}
+
+.auth-card {
+  background: var(--card);
+  border-left: 1px solid var(--line);
+  padding: 34px;
+  display: grid;
+  gap: 16px;
+  align-content: center;
+}
+
+.auth-card h2 {
+  margin: 0;
+}
+
+.app-shell {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 230px minmax(0, 1fr);
+}
+
+.sidebar {
+  background: var(--card);
+  border-right: 1px solid var(--line);
+  padding: 18px 14px;
+  display: grid;
+  align-content: start;
+  gap: 8px;
+}
+
+.sidebar div {
+  display: grid;
+  gap: 3px;
+  margin-bottom: 14px;
+}
+
+.sidebar div strong {
+  font-size: 21px;
+}
+
+.sidebar div span,
+.programme-list button span,
+.panel-title p,
+.card-title span,
+.resources span,
+.metric span,
+td,
+.eyebrow {
+  color: var(--muted);
+}
+
+.sidebar button {
+  background: transparent;
+  color: var(--ink);
+  text-align: left;
+}
+
+.sidebar button.active,
+.sidebar button:hover {
+  background: var(--brand);
+  color: #fff;
+}
+
+.workspace {
+  padding: 18px;
+  display: grid;
+  gap: 14px;
+  align-content: start;
+}
+
+.topbar {
+  display: grid;
+  grid-template-columns: minmax(200px, 1fr) auto;
+  gap: 12px;
+}
+
+.programme-grid {
+  display: grid;
+  grid-template-columns: 300px minmax(0, 1fr);
+  gap: 14px;
+  align-items: start;
+}
+
+.programme-list,
+.programme-panel,
+.card,
+.metric {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+
+.programme-list {
+  padding: 14px;
+  display: grid;
+  gap: 8px;
+}
+
+.programme-list h2 {
+  margin: 0 0 6px;
+  font-size: 18px;
+}
+
+.programme-list button {
+  background: #fff;
+  color: var(--ink);
+  border: 1px solid var(--line);
+  display: grid;
+  gap: 4px;
+}
+
+.programme-list button.active,
+.programme-list button:hover {
+  border-color: var(--brand);
+  background: #ecf8f5;
+}
+
+.programme-panel {
+  padding: 16px;
+  display: grid;
+  gap: 14px;
+}
+
+.panel-title {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: start;
+}
+
+.panel-title h1 {
+  margin: 0;
+  font-size: 28px;
+}
+
+.panel-title p {
+  margin: 5px 0 0;
+}
+
+.panel-title > span,
+.card-title span {
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 4px 8px;
+  font-size: 12px;
+}
+
+.tabs {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.tabs button {
+  background: #fff;
+  color: var(--ink);
+  border: 1px solid var(--line);
+}
+
+.tabs button:first-child {
+  background: var(--brand);
+  color: #fff;
+  border-color: var(--brand);
+}
+
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.metric {
+  padding: 14px;
+  display: grid;
+  gap: 7px;
+}
+
+.metric strong {
+  font-size: 28px;
+}
+
+.content-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.card {
+  padding: 14px;
+  display: grid;
+  gap: 12px;
+}
+
+.card.large {
+  grid-column: span 2;
+}
+
+.card-title {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: center;
+}
+
+.chart {
+  height: 230px;
+  border-left: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  align-items: end;
+  gap: 10%;
+  padding: 20px 28px 0;
+}
+
+.chart span {
+  display: block;
+  width: 42px;
+  border-radius: 8px 8px 0 0;
+  background: var(--brand);
+}
+
+.chart span:nth-child(2),
+.chart span:nth-child(4) {
+  background: var(--blue);
+}
+
+.chart span:nth-child(5) {
+  background: var(--amber);
+}
+
+.resources {
+  display: grid;
+  gap: 9px;
+}
+
+.resources div {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--bg);
+  padding: 10px;
+  display: grid;
+  gap: 4px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+td {
+  border-bottom: 1px solid var(--line);
+  padding: 10px 8px;
+  vertical-align: top;
+}
+
+.eyebrow {
+  margin: 0 0 6px;
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+@media (max-width: 920px) {
+  .auth-page,
+  .app-shell,
+  .programme-grid,
+  .topbar,
+  .content-grid,
+  .metrics {
+    grid-template-columns: 1fr;
+  }
+
+  .card.large {
+    grid-column: span 1;
+  }
+
+  .auth-copy,
+  .auth-card {
+    padding: 24px;
+  }
+}
