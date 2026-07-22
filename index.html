@@ -918,12 +918,11 @@
           <div class="card">
             <div class="card-title"><strong>Programmes</strong><span class="pill">Separate workspaces</span></div>
             <div class="programme-list">
+              <button class="programme-button" type="button" data-programme="canva"><strong>Canva</strong><span class="small">Verified schools and champions</span></button>
               <button class="programme-button active" type="button" data-programme="codeClubs"><strong>Code Clubs</strong><span class="small">Clubs, schools, learners, mentors</span></button>
               <button class="programme-button" type="button" data-programme="aiSkilling"><strong>AI Skilling</strong><span class="small">Training, completion, reporting</span></button>
-              <button class="programme-button" type="button" data-programme="canva"><strong>Canva Education</strong><span class="small">Verified schools and champions</span></button>
-              <button class="programme-button" type="button" data-programme="trainers"><strong>Master Trainers</strong><span class="small">Certification and deployment</span></button>
-              <button class="programme-button" type="button" data-programme="mentorship"><strong>School Visits</strong><span class="small">Mentorship and field follow-up</span></button>
-              <button class="programme-button" type="button" data-programme="leads"><strong>Leads & Outreach</strong><span class="small">Prospects, calls, conversion</span></button>
+              <button class="programme-button" type="button" data-programme="experienceAi"><strong>Experience AI</strong><span class="small">Teacher sessions, resources, evidence</span></button>
+              <button class="programme-button" type="button" data-programme="sia"><strong>SIA</strong><span class="small">Innovation Academy enrolment and classes</span></button>
             </div>
           </div>
 
@@ -931,14 +930,15 @@
             <div class="card-title"><strong id="programme-title">Code Clubs</strong><span class="pill" id="programme-pill">Programme workspace</span></div>
             <p class="muted" id="programme-summary">Code Clubs data is kept separate from other programmes, with its own dashboards, files, resources, evidence, and tasks.</p>
             <div class="programme-tabs">
-              <button class="btn primary" type="button">Overview</button>
-              <button class="btn" type="button">Data</button>
-              <button class="btn" type="button">Files</button>
+              <button class="btn primary" type="button">Dashboard</button>
+              <button class="btn" type="button">Data Files</button>
               <button class="btn" type="button">Google Forms</button>
-              <button class="btn" type="button">Recordings</button>
-              <button class="btn" type="button">Posters</button>
               <button class="btn" type="button">Reports</button>
+              <button class="btn" type="button">Recordings</button>
+              <button class="btn" type="button">Posters & Assets</button>
+              <button class="btn" type="button">Evidence</button>
               <button class="btn" type="button">Tasks</button>
+              <button class="btn" type="button">Audit Trail</button>
             </div>
             <div class="stats" style="margin-top: 12px;">
               <div class="card"><div class="stat-label" id="programme-metric-one-label">Schools/clubs</div><div class="stat-value" id="programme-metric-one">408</div><div class="small">programme records</div></div>
@@ -1177,7 +1177,7 @@
   <script>
     const labels = {
       home: ["Home", "Controlled workspace for data, dashboards, roles, uploads, and follow-up tasks."],
-      programmes: ["Programmes", "Each programme has its own dashboard, data, Google Forms, recordings, posters, evidence, reports, and tasks."],
+      programmes: ["Programmes", "Each programme has its own dashboard, Data Files, Google Forms, recordings, posters, evidence, reports, tasks, and audit trail."],
       dashboards: ["Dashboards", "Graphs and analysis for programme performance, counties, trainings, and M&E."],
       files: ["Files & Sheets", "Browse connected Drive files, inspect sheets, and open analysis for each source."],
       catalog: ["Data Catalog", "Governed datasets with owners, access levels, quality scores, and refresh timing."],
@@ -1337,32 +1337,25 @@
         resources: [["Google Forms", "Registration and reporting forms"], ["Recordings", "Training sessions and webinars"], ["Reports", "Milestone and proof-of-execution reports"], ["Certificates", "Uploaded course evidence"]]
       },
       canva: {
-        title: "Canva Education",
+        title: "Canva",
         pill: "Schools and champions",
-        summary: "Canva Education has its own verified schools, champion applications, follow-up forms, training assets, posters, and reports.",
+        summary: "Canva keeps verified schools, champion applications, follow-up forms, training assets, posters, reports, and evidence in one programme workspace.",
         metrics: [["Verified sheets", "9"], ["School fields", "89"], ["Contacts", "57"], ["Counties", "44"]],
-        resources: [["Google Forms", "Champion applications and follow-up"], ["Posters", "Canva school campaign materials"], ["Reports", "Verified schools and county coverage"], ["Evidence", "Screenshots and training proof"]]
+        resources: [["Data Files", "Canva reporting sheets and school lists"], ["Google Forms", "Champion applications and follow-up responses"], ["Posters & Assets", "Canva school campaign materials"], ["Evidence", "Screenshots, attendance proof, and training records"]]
       },
-      trainers: {
-        title: "Master Trainers",
-        pill: "Certification",
-        summary: "Master Trainers stores trainer records, certificates, course uploads, deployment planning, and reporting evidence.",
-        metrics: [["Trainer sheets", "10"], ["Certificate sheets", "8"], ["Courses", "4"], ["Evidence", "Tracked"]],
-        resources: [["Certificates", "Uploaded trainer proof"], ["Google Forms", "Course upload forms"], ["Reports", "Certification summaries"], ["Deployment", "County trainer assignment lists"]]
+      experienceAi: {
+        title: "Experience AI",
+        pill: "Teacher sessions",
+        summary: "Experience AI stores session data, teacher participation, recordings, posters, reports, evidence, and follow-up activities separately from AI Skilling.",
+        metrics: [["Sessions", "4"], ["Teachers", "165"], ["Resources", "12"], ["Evidence", "Ready"]],
+        resources: [["Data Files", "Session attendance and participant exports"], ["Google Forms", "Registration, feedback, and response forms"], ["Recordings", "Experience AI class and webinar recordings"], ["Posters & Assets", "Session posters, branding, and invitation links"]]
       },
-      mentorship: {
-        title: "School Visits",
-        pill: "Mentorship",
-        summary: "School Visits keeps mentorship trackers, assigned team members, school visit evidence, attendance, and follow-up tasks together.",
-        metrics: [["Visit trackers", "6"], ["Assigned teams", "1"], ["Open follow-ups", "4"], ["Evidence", "Required"]],
-        resources: [["Recordings", "Mentorship session proof"], ["Photos", "School visit evidence"], ["Attendance", "Mentor and learner lists"], ["Tasks", "Pending follow-ups by officer"]]
-      },
-      leads: {
-        title: "Leads & Outreach",
-        pill: "Pipeline",
-        summary: "Leads & Outreach separates prospects, contact lists, campaigns, call activity, conversion, and assigned follow-up from programme delivery data.",
-        metrics: [["Lead sheets", "11"], ["Outreach rows", "68"], ["Core fields", "5"], ["Pipeline", "Active"]],
-        resources: [["Lead forms", "Inquiry and prospect capture"], ["Campaigns", "Posters and outreach assets"], ["Calls", "Contact and follow-up history"], ["Reports", "Conversion and source performance"]]
+      sia: {
+        title: "SIA",
+        pill: "Innovation Academy",
+        summary: "SIA stores enrolments, learner data, payments, class resources, recordings, posters, reports, and parent communication in its own workspace.",
+        metrics: [["Enrolment forms", "2"], ["Learner records", "1"], ["Payments", "Tracked"], ["Classes", "Active"]],
+        resources: [["Data Files", "Innovation Academy responses and paid students"], ["Google Forms", "Welcome and enrolment forms"], ["Recordings", "Class recordings and learner sessions"], ["Posters & Assets", "Programme posters, registration links, and parent materials"]]
       }
     };
 
