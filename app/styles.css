@@ -35,6 +35,12 @@ button {
   padding: 10px 12px;
 }
 
+button.secondary {
+  background: #eef4f1;
+  color: var(--ink);
+  margin-left: 8px;
+}
+
 input {
   width: 100%;
   border: 1px solid var(--line);

@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useMemo, useState } from "react";
+import { FormEvent, useEffect, useMemo, useState } from "react";
 
 const programmes = [
   {
@@ -99,17 +99,41 @@ const files = [
   ["Innovation Academy Responses", "SIA", "2 sheets", "Learner enrolment and payment tracking"]
 ];
 
+type SavedDriveFolders = Record<string, string>;
+
 export default function Page() {
   const [signedIn, setSignedIn] = useState(false);
   const [activeProgrammeId, setActiveProgrammeId] = useState("code-clubs");
   const [activeSection, setActiveSection] = useState("programmes");
   const [driveUrl, setDriveUrl] = useState("");
+  const [savedDriveFolders, setSavedDriveFolders] = useState<SavedDriveFolders>({});
   const [driveStatus, setDriveStatus] = useState("Paste a Drive folder URL to connect programme resources.");
 
   const activeProgramme = useMemo(
     () => programmes.find((programme) => programme.id === activeProgrammeId) ?? programmes[1],
     [activeProgrammeId]
   );
+  const savedDriveUrl = savedDriveFolders[activeProgramme.id] ?? "";
+
+  useEffect(() => {
+    const saved = window.localStorage.getItem("takwimu-drive-folders");
+    if (saved) {
+      try {
+        setSavedDriveFolders(JSON.parse(saved) as SavedDriveFolders);
+      } catch {
+        window.localStorage.removeItem("takwimu-drive-folders");
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    setDriveUrl(savedDriveFolders[activeProgrammeId] ?? "");
+    setDriveStatus(
+      savedDriveFolders[activeProgrammeId]
+        ? "This programme already has a saved Drive folder. You can sync it now or replace it."
+        : "Paste this programme's Drive folder URL once, then Takwimu will remember it."
+    );
+  }, [activeProgrammeId, savedDriveFolders]);
 
   function handleAuth(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -117,15 +141,20 @@ export default function Page() {
   }
 
   async function connectDrive() {
-    if (!driveUrl.trim()) {
+    const folderUrl = driveUrl.trim() || savedDriveUrl;
+
+    if (!folderUrl) {
       setDriveStatus("Paste a valid Google Drive folder URL first.");
       return;
     }
 
+    const nextFolders = { ...savedDriveFolders, [activeProgramme.id]: folderUrl };
+    setSavedDriveFolders(nextFolders);
+    window.localStorage.setItem("takwimu-drive-folders", JSON.stringify(nextFolders));
     setDriveStatus("Opening Google permission screen...");
     window.location.href = `/api/drive/connect?programmeId=${encodeURIComponent(
       activeProgramme.id
-    )}&driveUrl=${encodeURIComponent(driveUrl.trim())}`;
+    )}&driveUrl=${encodeURIComponent(folderUrl)}`;
   }
 
   if (!signedIn) {
@@ -302,8 +331,23 @@ export default function Page() {
                   />
                 </label>
                 <button type="button" onClick={connectDrive}>
-                  Connect folder
+                  {savedDriveUrl ? "Sync saved folder" : "Connect folder"}
                 </button>
+                {savedDriveUrl ? (
+                  <button
+                    className="secondary"
+                    type="button"
+                    onClick={() => {
+                      const nextFolders = { ...savedDriveFolders };
+                      delete nextFolders[activeProgramme.id];
+                      setSavedDriveFolders(nextFolders);
+                      window.localStorage.setItem("takwimu-drive-folders", JSON.stringify(nextFolders));
+                      setDriveUrl("");
+                    }}
+                  >
+                    Replace folder
+                  </button>
+                ) : null}
                 <p>{driveStatus}</p>
               </section>
             </div>
